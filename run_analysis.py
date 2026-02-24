@@ -3,7 +3,6 @@
 GitHub Contributions Performance Review Runner
 
 This script runs the analysis and starts the Grafana dashboard.
-Replaces run-analysis.sh with a cross-platform Python implementation.
 """
 
 import os
@@ -22,12 +21,10 @@ class Colors:
 
 
 def print_colored(message, color):
-    """Print message with color"""
     print(f"{color}{message}{Colors.NC}")
 
 
 def print_header():
-    """Print script header"""
     print_colored("═" * 67, Colors.BLUE)
     print_colored("   GitHub Contributions Performance Review", Colors.BLUE)
     print_colored("═" * 67, Colors.BLUE)
@@ -35,7 +32,6 @@ def print_header():
 
 
 def check_github_token():
-    """Check if GITHUB_TOKEN is set"""
     token = os.environ.get("GITHUB_TOKEN")
     if not token:
         print_colored("Error: GITHUB_TOKEN environment variable not set", Colors.RED)
@@ -48,7 +44,6 @@ def check_github_token():
 
 
 def check_docker():
-    """Check if Docker is available"""
     try:
         subprocess.run(
             ["docker", "--version"],
@@ -61,13 +56,11 @@ def check_docker():
 
 
 def run_analysis(args):
-    """Run the performance review analysis"""
     print_colored("📊 Running contribution analysis...", Colors.BLUE)
     print()
 
     try:
-        # Run performance-review.py as a subprocess
-        result = subprocess.run(
+        subprocess.run(
             [sys.executable, 'performance-review.py'] + args,
             check=True
         )
