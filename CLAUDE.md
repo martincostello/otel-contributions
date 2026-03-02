@@ -33,12 +33,12 @@ uv run python contributions-detail.py
 
 Run the comprehensive performance review script (with CLI):
 ```bash
-uv run python performance-review.py --username jaydeluca --start-date 2025-07-01 --end-date 2026-01-31
+uv run python performance-review.py --start-date 2025-07-01 --end-date 2026-01-31
 ```
 
 Run everything with the wrapper script (includes Grafana dashboard):
 ```bash
-uv run python run_analysis.py --username jaydeluca --start-date 2025-07-01 --end-date 2026-01-31
+uv run python run_analysis.py --start-date 2025-07-01 --end-date 2026-01-31
 ```
 
 Access the Grafana dashboard:
@@ -94,7 +94,6 @@ Enhanced performance review script with CLI arguments, intelligent caching, and 
 **Usage:**
 ```bash
 python performance-review.py \
-  --username jaydeluca \
   --start-date 2025-07-01 \
   --end-date 2026-01-31 \
   --orgs open-telemetry prometheus grafana
@@ -174,13 +173,13 @@ These have hardcoded configuration at the top:
 
 ### performance-review.py
 Fully configurable via CLI arguments (recommended) or by modifying the config dictionary:
-- `--username`: GitHub username to analyze
+- `--username`: GitHub username to analyze (defaults to the user associated with `GITHUB_TOKEN`)
 - `--start-date`: Analysis start date (YYYY-MM-DD format)
 - `--end-date`: Analysis end date (YYYY-MM-DD format)
 - `--orgs`: List of organizations (default: open-telemetry prometheus grafana)
 - `--output-dir`: Output directory (default: output)
 - `--cache-dir`: Cache directory (default: review_cache)
-- Token: Always read from GITHUB_TOKEN environment variable
+- Token: Always read from `GITHUB_TOKEN` environment variable
 
 ### Docker Services
 Configuration in docker-compose.yml:

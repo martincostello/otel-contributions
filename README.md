@@ -15,12 +15,12 @@ Generate eports with timeseries data and interactive Grafana dashboards.
 2. **Run Analysis**
    ```bash
    # uv automatically installs dependencies on first run
-   uv run python run_analysis.py --username jaydeluca --start-date 2025-07-01 --end-date 2026-02-21
+   uv run python run_analysis.py --start-date 2025-07-01 --end-date 2026-02-21
    ```
 
    Or directly run the performance review script:
    ```bash
-   uv run python performance-review.py --username jaydeluca --start-date 2025-07-01 --end-date 2026-01-31
+   uv run python performance-review.py --start-date 2025-07-01 --end-date 2026-01-31
    ```
 
 3. **View Dashboard**
@@ -38,11 +38,11 @@ Generate eports with timeseries data and interactive Grafana dashboards.
 uv run python performance-review.py [OPTIONS]
 
 Required:
-  --username USERNAME          GitHub username to analyze
   --start-date YYYY-MM-DD     Analysis start date
   --end-date YYYY-MM-DD       Analysis end date
 
 Optional:
+  --username USERNAME         GitHub username to analyze (defaults to the user associated with `GITHUB_TOKEN`)
   --orgs ORG1 ORG2 ...        Organizations to analyze
                               (default: open-telemetry prometheus grafana)
   --output-dir DIR            Output directory (default: output)
@@ -54,7 +54,6 @@ Optional:
 **Basic Usage:**
 ```bash
 uv run python performance-review.py \
-  --username jaydeluca \
   --start-date 2025-07-01 \
   --end-date 2026-01-31
 ```
@@ -62,15 +61,21 @@ uv run python performance-review.py \
 **With Wrapper Script:**
 ```bash
 uv run python run_analysis.py \
-  --username jaydeluca \
   --start-date 2025-07-01 \
   --end-date 2026-01-31
+```
+
+**Custom Username:**
+```bash
+uv run python performance-review.py \
+  --start-date 2025-07-01 \
+  --end-date 2026-01-31 \
+  --username otel-contributor
 ```
 
 **Custom Organizations:**
 ```bash
 uv run python performance-review.py \
-  --username myuser \
   --start-date 2025-01-01 \
   --end-date 2025-12-31 \
   --orgs kubernetes docker helm
@@ -79,7 +84,6 @@ uv run python performance-review.py \
 **Custom Output Directory:**
 ```bash
 uv run python performance-review.py \
-  --username jaydeluca \
   --start-date 2025-07-01 \
   --end-date 2026-01-31 \
   --output-dir ./my-reports
@@ -163,7 +167,6 @@ rm -rf review_cache/
 Pass different dates via CLI arguments:
 ```bash
 uv run python performance-review.py \
-  --username myuser \
   --start-date 2025-08-01 \
   --end-date 2026-02-28
 ```
@@ -172,7 +175,6 @@ uv run python performance-review.py \
 
 ```bash
 uv run python performance-review.py \
-  --username myuser \
   --start-date 2025-01-01 \
   --end-date 2025-12-31 \
   --orgs open-telemetry prometheus grafana kubernetes docker

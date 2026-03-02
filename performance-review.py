@@ -56,14 +56,14 @@ def parse_args():
         epilog="""
 Examples:
   # Analyze contributions for a specific period
-  python performance-review.py --username jaydeluca --start-date 2025-07-01 --end-date 2026-01-31
+  python performance-review.py --start-date 2025-07-01 --end-date 2026-01-31
 
   # Custom organizations
-  python performance-review.py --username myuser --start-date 2025-01-01 --end-date 2025-12-31 --orgs kubernetes docker
+  python performance-review.py --start-date 2025-01-01 --end-date 2025-12-31 --orgs kubernetes docker
         """
     )
 
-    parser.add_argument('--username', required=True, help='GitHub username to analyze')
+    parser.add_argument('--username', help='GitHub username to analyze (defaults to the user associated with GITHUB_TOKEN)')
     parser.add_argument('--start-date', required=True, help='Start date (YYYY-MM-DD)')
     parser.add_argument('--end-date', required=True, help='End date (YYYY-MM-DD)')
     parser.add_argument('--orgs', nargs='+', default=['open-telemetry', 'prometheus', 'grafana'],
@@ -80,7 +80,6 @@ def init_config(args):
         print("Error: GITHUB_TOKEN environment variable not set")
         exit(1)
 
-    config['username'] = args.username
     config['token'] = token
     config['headers'] = {'Authorization': f'token {token}'}
     config['organizations'] = args.orgs
@@ -88,6 +87,36 @@ def init_config(args):
     config['end_date'] = args.end_date
     config['cache_dir'] = args.cache_dir
     config['output_dir'] = args.output_dir
+
+    if args.username:
+        username = args.username
+    else:
+        cache_stats['api_calls'] += 1
+        print_cache_stats_inline()
+        response = requests.get('https://api.github.com/user', headers=config['headers'], timeout=10)
+
+        if response.status_code != 200:
+            clear_cache_stats_line()
+            try:
+                error_message = response.json().get('message', 'Unknown error')
+            except ValueError:
+                # Fallback for non-JSON or empty error bodies
+                error_message = response.text or 'Unknown error (non-JSON response)'
+            print(f"    [API ERROR] {response.status_code} - {error_message}")
+            exit(1)
+
+        try:
+            data = response.json()
+        except ValueError:
+            clear_cache_stats_line()
+            print("    [API ERROR] 200 - Unable to parse JSON from GitHub user response")
+            exit(1)
+        username = data.get('login')
+        if not username:
+            print("Error: Unable to determine username from GitHub login associated with GITHUB_TOKEN")
+            exit(1)
+
+    config['username'] = username
 
     # Create directories
     os.makedirs(config['cache_dir'], exist_ok=True)
