@@ -243,7 +243,7 @@ def get_pr_reviews(repo_full_name, pr_number):
     if cached_data is not None:
         return cached_data
 
-    url = f'{github_api_url}/repos/{repo_full_name}/pulls/{pr_number}/reviews'
+    url = f'{github_api_url}/repos/{repo_full_name}/pulls/{pr_number}/reviews?per_page=100'
     cache_stats['api_calls'] += 1
     print_cache_stats_inline()
     response = requests.get(url, headers=config['headers'])
@@ -266,7 +266,7 @@ def get_pr_review_comments(repo_full_name, pr_number):
     if cached_data is not None:
         return cached_data
 
-    url = f'{github_api_url}/repos/{repo_full_name}/pulls/{pr_number}/comments'
+    url = f'{github_api_url}/repos/{repo_full_name}/pulls/{pr_number}/comments?per_page=100'
     cache_stats['api_calls'] += 1
     print_cache_stats_inline()
     response = requests.get(url, headers=config['headers'])
