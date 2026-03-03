@@ -12,6 +12,9 @@ Generate eports with timeseries data and interactive Grafana dashboards.
    export GITHUB_TOKEN="your_github_token_here"
    ```
 
+> [!NOTE]
+> Ensure that you configure SSO access for your GitHub personal access token if you want to query contributions for the Grafana organization.
+
 2. **Run Analysis**
    ```bash
    # uv automatically installs dependencies on first run
