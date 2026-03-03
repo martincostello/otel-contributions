@@ -66,7 +66,7 @@ Examples:
 
     parser.add_argument('--username', help='GitHub username to analyze (defaults to the user associated with GITHUB_TOKEN)')
     parser.add_argument('--start-date', required=True, help='Start date (YYYY-MM-DD)')
-    parser.add_argument('--end-date', required=True, help='End date (YYYY-MM-DD)')
+    parser.add_argument('--end-date', default=datetime.now().strftime('%Y-%m-%d'), help='End date (YYYY-MM-DD, defaults to today)')
     parser.add_argument('--orgs', nargs='+', default=['open-telemetry', 'prometheus', 'grafana'],
                         help='GitHub organizations to analyze (default: open-telemetry prometheus grafana)')
     parser.add_argument('--output-dir', default='output', help='Output directory (default: output)')
