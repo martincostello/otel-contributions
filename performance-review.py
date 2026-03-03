@@ -25,6 +25,7 @@ cache_stats = {
     'last_printed': '',  # Track last printed line for updates
 }
 
+github_api_url = 'https://api.github.com'
 
 def print_cache_stats_inline():
     """Print cache statistics on the same line (updates in place)"""
@@ -93,7 +94,7 @@ def init_config(args):
     else:
         cache_stats['api_calls'] += 1
         print_cache_stats_inline()
-        response = requests.get('https://api.github.com/user', headers=config['headers'], timeout=10)
+        response = requests.get(f'{github_api_url}/user', headers=config['headers'], timeout=10)
 
         if response.status_code != 200:
             clear_cache_stats_line()
@@ -204,7 +205,7 @@ def search_github(query, per_page=100):
     page = 1
 
     while True:
-        url = f'https://api.github.com/search/issues?q={query}&per_page={per_page}&page={page}'
+        url = f'{github_api_url}/search/issues?q={query}&per_page={per_page}&page={page}'
         cache_stats['api_calls'] += 1
         print_cache_stats_inline()
         response = requests.get(url, headers=config['headers'])
@@ -242,7 +243,7 @@ def get_pr_reviews(repo_full_name, pr_number):
     if cached_data is not None:
         return cached_data
 
-    url = f'https://api.github.com/repos/{repo_full_name}/pulls/{pr_number}/reviews'
+    url = f'{github_api_url}/repos/{repo_full_name}/pulls/{pr_number}/reviews'
     cache_stats['api_calls'] += 1
     print_cache_stats_inline()
     response = requests.get(url, headers=config['headers'])
@@ -265,7 +266,7 @@ def get_pr_review_comments(repo_full_name, pr_number):
     if cached_data is not None:
         return cached_data
 
-    url = f'https://api.github.com/repos/{repo_full_name}/pulls/{pr_number}/comments'
+    url = f'{github_api_url}/repos/{repo_full_name}/pulls/{pr_number}/comments'
     cache_stats['api_calls'] += 1
     print_cache_stats_inline()
     response = requests.get(url, headers=config['headers'])
