@@ -333,7 +333,7 @@ def analyze_contributions():
             pr_number = pr['number']
 
             reviews = get_pr_reviews(repo_name, pr_number)
-            user_reviews = [r for r in reviews if r['user']['login'] == config['username']]
+            user_reviews = [r for r in reviews if r.get('user') and r['user'].get('login') == config['username']]
 
             if user_reviews:
                 pr_author = pr['user']['login']
