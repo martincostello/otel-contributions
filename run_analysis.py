@@ -9,6 +9,7 @@ import os
 import sys
 import subprocess
 from pathlib import Path
+from generate_dashboard import generate_dashboard, DEFAULT_ORGS
 
 
 class Colors:
@@ -79,6 +80,34 @@ def run_analysis(args):
         return False
 
 
+def extract_orgs(args):
+    """Extract --orgs values from the argument list, returning defaults if not present."""
+    try:
+        idx = args.index("--orgs")
+    except ValueError:
+        return DEFAULT_ORGS
+
+    orgs = []
+    for arg in args[idx + 1:]:
+        if arg.startswith("--"):
+            break
+        orgs.append(arg)
+    return orgs if orgs else DEFAULT_ORGS
+
+
+def generate_grafana_dashboard(orgs):
+    """Generate the Grafana dashboard JSON for the GitHub organizations that were searched."""
+    print_colored("📋 Generating Grafana dashboard...", Colors.BLUE)
+    try:
+        generate_dashboard(orgs)
+        print_colored("✅ Dashboard generated!", Colors.GREEN)
+        print()
+        return True
+    except Exception as e:
+        print_colored(f"❌ Dashboard generation failed: {e}", Colors.RED)
+        return False
+
+
 def start_dashboard():
     """Start Grafana dashboard with Docker Compose"""
     print_colored("🚀 Starting Grafana dashboard...", Colors.BLUE)
@@ -134,6 +163,11 @@ def main():
     # Run analysis with all command line arguments
     args = sys.argv[1:]
     if not run_analysis(args):
+        sys.exit(1)
+
+    # Generate Grafana dashboard for the configured organizations
+    orgs = extract_orgs(args)
+    if not generate_grafana_dashboard(orgs):
         sys.exit(1)
 
     # Start dashboard if Docker is available

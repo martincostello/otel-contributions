@@ -6,8 +6,10 @@ grafana-storage/
 *.json
 !grafana/**/*.json
 !package.json
+grafana/dashboards/github-contributions.json
 
 # uv
 .venv/
 .python-version
+__pycache__/
 uv.lock

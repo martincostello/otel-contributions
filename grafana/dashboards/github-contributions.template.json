@@ -397,19 +397,7 @@
               "type": "timestamp"
             },
             {
-              "selector": "merged_prs_open_telemetry",
-              "text": "OpenTelemetry",
-              "type": "number"
-            },
-            {
-              "selector": "merged_prs_prometheus",
-              "text": "Prometheus",
-              "type": "number"
-            },
-            {
-              "selector": "merged_prs_grafana",
-              "text": "Grafana",
-              "type": "number"
+              "_placeholder": "merged_prs"
             }
           ],
           "datasource": {
@@ -510,19 +498,7 @@
               "type": "timestamp"
             },
             {
-              "selector": "reviews_submitted_open_telemetry",
-              "text": "OpenTelemetry",
-              "type": "number"
-            },
-            {
-              "selector": "reviews_submitted_prometheus",
-              "text": "Prometheus",
-              "type": "number"
-            },
-            {
-              "selector": "reviews_submitted_grafana",
-              "text": "Grafana",
-              "type": "number"
+              "_placeholder": "reviews_submitted"
             }
           ],
           "datasource": {
