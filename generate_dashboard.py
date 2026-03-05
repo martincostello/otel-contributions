@@ -36,7 +36,7 @@ def fetch_org_display_name(org, headers):
             name = response.json().get("name")
             if name:
                 return name
-    except requests.RequestException:
+    except (requests.RequestException, ValueError):
         pass
     return org
 
