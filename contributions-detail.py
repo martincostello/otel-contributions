@@ -1,5 +1,6 @@
 import requests
 import os
+from github_utils import github_get
 
 
 username = 'jaydeluca'
@@ -15,7 +16,7 @@ def load_or_fetch_repo_data(repo_name):
     while True:
         # print(f"Fetching commits for {repo_name} page {page}")
         commits_url = f'https://api.github.com/repos/{org_name}/{repo_name}/commits?author={username}&page={page}&per_page=100'
-        commits_response = requests.get(commits_url, headers=headers)
+        commits_response = github_get(commits_url, headers=headers)
         commit_data = commits_response.json()
         if not commit_data:
             break
@@ -31,7 +32,7 @@ def load_or_fetch_prs(repo_name):
     while True:
         # print(f"Fetching PRs for {repo_name} page {page}")
         url = f'https://api.github.com/repos/{org_name}/{repo_name}/pulls?state=closed&page={page}&per_page=1000'
-        commits_response = requests.get(url, headers=headers)
+        commits_response = github_get(url, headers=headers)
         commit_data = commits_response.json()
         if not commit_data:
             break
@@ -51,7 +52,7 @@ if __name__ == '__main__':
     repos = []
     while True:
         repos_url = f'https://api.github.com/orgs/{org_name}/repos?sort=created&direction=desc&page={page}&per_page=100'
-        repos_response = requests.get(repos_url, headers=headers)
+        repos_response = github_get(repos_url, headers=headers)
         new_repos = repos_response.json()
         repos.extend(new_repos)
         if len(new_repos) < 100:

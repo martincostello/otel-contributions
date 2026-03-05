@@ -11,6 +11,7 @@ import json
 import os
 
 import requests
+from github_utils import github_get
 
 TEMPLATE_PATH = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
@@ -27,7 +28,7 @@ DEFAULT_ORGS = ["open-telemetry", "prometheus", "grafana"]
 def fetch_org_display_name(org, headers):
     """Fetch the display name of a GitHub org via the API. Falls back to the org slug."""
     try:
-        response = requests.get(
+        response = github_get(
             f"https://api.github.com/orgs/{org}",
             headers=headers,
             timeout=10,
