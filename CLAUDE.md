@@ -175,7 +175,7 @@ These have hardcoded configuration at the top:
 Fully configurable via CLI arguments (recommended) or by modifying the config dictionary:
 - `--username`: GitHub username to analyze (defaults to the user associated with `GITHUB_TOKEN`)
 - `--start-date`: Analysis start date (YYYY-MM-DD format)
-- `--end-date`: Analysis end date (YYYY-MM-DD format)
+- `--end-date`: Analysis end date (YYYY-MM-DD format) (defaults to today)
 - `--orgs`: List of organizations (default: open-telemetry prometheus grafana)
 - `--output-dir`: Output directory (default: output)
 - `--cache-dir`: Cache directory (default: review_cache)

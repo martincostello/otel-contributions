@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   file-server:
     image: python:3.11-slim

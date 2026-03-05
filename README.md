@@ -39,9 +39,9 @@ uv run python performance-review.py [OPTIONS]
 
 Required:
   --start-date YYYY-MM-DD     Analysis start date
-  --end-date YYYY-MM-DD       Analysis end date
 
 Optional:
+  --end-date YYYY-MM-DD       Analysis end date (defaults to today)
   --username USERNAME         GitHub username to analyze (defaults to the user associated with `GITHUB_TOKEN`)
   --orgs ORG1 ORG2 ...        Organizations to analyze
                               (default: open-telemetry prometheus grafana)
