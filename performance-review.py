@@ -166,7 +166,7 @@ def save_to_cache(cache_key, data):
         json.dump(data, f, indent=2)
 
 
-def is_bot(username):
+def is_bot(username, type):
     """Detect if a username belongs to a bot
 
     Common bot patterns:
@@ -174,6 +174,9 @@ def is_bot(username):
     - Ends with -bot
     - Known bot names
     """
+    if type == 'Bot':
+        return True
+
     username_lower = username.lower()
 
     # Common bot suffixes
@@ -339,7 +342,7 @@ def analyze_contributions():
 
             if user_reviews:
                 pr_author = pr['user']['login']
-                author_is_bot = is_bot(pr_author)
+                author_is_bot = is_bot(pr_author, pr['user']['type'])
 
                 stats['unique_pr_authors'].add(pr_author)
                 if author_is_bot:
