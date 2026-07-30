@@ -18,7 +18,7 @@ Generate eports with timeseries data and interactive Grafana dashboards.
 2. **Run Analysis**
    ```bash
    # uv automatically installs dependencies on first run
-   uv run python run_analysis.py --start-date 2025-07-01 --end-date 2026-02-21
+   uv run python run_analysis.py --start-date 2026-01-01 --end-date 2026-07-29
    ```
 
    Or directly run the performance review script:

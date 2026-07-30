@@ -797,13 +797,690 @@
       ],
       "title": "Bot Contributors Reviewed",
       "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 26
+      },
+      "id": 12,
+      "panels": [],
+      "title": "Per-Repository Activity",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "github-infinity"
+      },
+      "description": "All tracked activity broken down by repository. Sorted by total activity; click a column header to re-sort.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Repository"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 380
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Total Activity"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "gauge"
+                }
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 27
+      },
+      "id": 13,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": [
+            "Merged PRs",
+            "Reviews",
+            "Human Reviews",
+            "Bot Reviews",
+            "PR Review Comments",
+            "Issues Commented",
+            "Total Activity"
+          ],
+          "reducer": ["sum"],
+          "show": true
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Total Activity"
+          }
+        ]
+      },
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "repo",
+              "text": "Repository",
+              "type": "string"
+            },
+            {
+              "selector": "merged_prs",
+              "text": "Merged PRs",
+              "type": "number"
+            },
+            {
+              "selector": "reviews_submitted",
+              "text": "Reviews",
+              "type": "number"
+            },
+            {
+              "selector": "reviews_non_bot",
+              "text": "Human Reviews",
+              "type": "number"
+            },
+            {
+              "selector": "reviews_bot",
+              "text": "Bot Reviews",
+              "type": "number"
+            },
+            {
+              "selector": "pr_review_comments",
+              "text": "PR Review Comments",
+              "type": "number"
+            },
+            {
+              "selector": "issues_commented",
+              "text": "Issues Commented",
+              "type": "number"
+            },
+            {
+              "selector": "total_activity",
+              "text": "Total Activity",
+              "type": "number"
+            }
+          ],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "github-infinity"
+          },
+          "filters": [],
+          "format": "table",
+          "refId": "A",
+          "root_selector": "repositories",
+          "source": "url",
+          "type": "json",
+          "url": "http://file-server:8000/by_repository.json",
+          "url_options": {
+            "method": "GET"
+          }
+        }
+      ],
+      "title": "Activity by Repository",
+      "transformations": [
+        {
+          "id": "filterByValue",
+          "options": {
+            "filters": [
+              {
+                "config": {
+                  "id": "regex",
+                  "options": {
+                    "value": "^(${repo:pipe})$"
+                  }
+                },
+                "fieldName": "Repository"
+              }
+            ],
+            "match": "any",
+            "type": "include"
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "github-infinity"
+      },
+      "description": "Merged PRs and reviews side by side, for the 15 most active repositories in the selection.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 39
+      },
+      "id": 14,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.8,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "horizontal",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "10.0.0",
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "repo",
+              "text": "Repository",
+              "type": "string"
+            },
+            {
+              "selector": "merged_prs",
+              "text": "Merged PRs",
+              "type": "number"
+            },
+            {
+              "selector": "reviews_submitted",
+              "text": "Reviews",
+              "type": "number"
+            }
+          ],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "github-infinity"
+          },
+          "filters": [],
+          "format": "table",
+          "refId": "A",
+          "root_selector": "repositories",
+          "source": "url",
+          "type": "json",
+          "url": "http://file-server:8000/by_repository.json",
+          "url_options": {
+            "method": "GET"
+          }
+        }
+      ],
+      "title": "Merged PRs vs Reviews by Repository (Top 15)",
+      "transformations": [
+        {
+          "id": "filterByValue",
+          "options": {
+            "filters": [
+              {
+                "config": {
+                  "id": "regex",
+                  "options": {
+                    "value": "^(${repo:pipe})$"
+                  }
+                },
+                "fieldName": "Repository"
+              }
+            ],
+            "match": "any",
+            "type": "include"
+          }
+        },
+        {
+          "id": "limit",
+          "options": {
+            "limitField": 15
+          }
+        }
+      ],
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "github-infinity"
+      },
+      "description": "Daily merged PRs, one series per repository. Use the Repository variable or the legend to focus on specific repos.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "displayName": "${__field.labels.repo}",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 51
+      },
+      "id": 15,
+      "options": {
+        "legend": {
+          "calcs": ["sum"],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "sortBy": "Total",
+          "sortDesc": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "date",
+              "text": "Date",
+              "type": "timestamp"
+            },
+            {
+              "selector": "repo",
+              "text": "repo",
+              "type": "string"
+            },
+            {
+              "selector": "merged_prs",
+              "text": "Merged PRs",
+              "type": "number"
+            }
+          ],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "github-infinity"
+          },
+          "format": "table",
+          "refId": "A",
+          "source": "url",
+          "type": "csv",
+          "url": "http://file-server:8000/timeseries_repo_daily.csv",
+          "url_options": {
+            "method": "GET"
+          }
+        }
+      ],
+      "title": "Merged PRs by Repository",
+      "transformations": [
+        {
+          "id": "filterByValue",
+          "options": {
+            "filters": [
+              {
+                "config": {
+                  "id": "regex",
+                  "options": {
+                    "value": "^(${repo:pipe})$"
+                  }
+                },
+                "fieldName": "repo"
+              },
+              {
+                "config": {
+                  "id": "greater",
+                  "options": {
+                    "value": 0
+                  }
+                },
+                "fieldName": "Merged PRs"
+              }
+            ],
+            "match": "all",
+            "type": "include"
+          }
+        },
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": ["repo"],
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "github-infinity"
+      },
+      "description": "Daily reviews submitted, one series per repository. Use the Repository variable or the legend to focus on specific repos.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "displayName": "${__field.labels.repo}",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 60
+      },
+      "id": 16,
+      "options": {
+        "legend": {
+          "calcs": ["sum"],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "sortBy": "Total",
+          "sortDesc": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "date",
+              "text": "Date",
+              "type": "timestamp"
+            },
+            {
+              "selector": "repo",
+              "text": "repo",
+              "type": "string"
+            },
+            {
+              "selector": "reviews_submitted",
+              "text": "Reviews",
+              "type": "number"
+            }
+          ],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "github-infinity"
+          },
+          "format": "table",
+          "refId": "A",
+          "source": "url",
+          "type": "csv",
+          "url": "http://file-server:8000/timeseries_repo_daily.csv",
+          "url_options": {
+            "method": "GET"
+          }
+        }
+      ],
+      "title": "Reviews Submitted by Repository",
+      "transformations": [
+        {
+          "id": "filterByValue",
+          "options": {
+            "filters": [
+              {
+                "config": {
+                  "id": "regex",
+                  "options": {
+                    "value": "^(${repo:pipe})$"
+                  }
+                },
+                "fieldName": "repo"
+              },
+              {
+                "config": {
+                  "id": "greater",
+                  "options": {
+                    "value": 0
+                  }
+                },
+                "fieldName": "Reviews"
+              }
+            ],
+            "match": "all",
+            "type": "include"
+          }
+        },
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": ["repo"],
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
     }
   ],
   "schemaVersion": 38,
   "style": "dark",
   "tags": ["github", "contributions", "performance-review"],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "current": {},
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "github-infinity"
+        },
+        "definition": "Repositories with activity in the analyzed period",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Repository",
+        "multi": true,
+        "name": "repo",
+        "options": [],
+        "query": {
+          "infinityQuery": {
+            "columns": [
+              {
+                "selector": "repo",
+                "text": "repo",
+                "type": "string"
+              }
+            ],
+            "filters": [],
+            "format": "table",
+            "refId": "variable",
+            "root_selector": "repositories",
+            "source": "url",
+            "type": "json",
+            "url": "http://file-server:8000/by_repository.json",
+            "url_options": {
+              "method": "GET"
+            }
+          },
+          "query": "",
+          "queryType": "infinity"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      }
+    ]
   },
   "time": {
     "from": "now-6M",

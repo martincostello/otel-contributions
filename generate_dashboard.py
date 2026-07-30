@@ -15,7 +15,7 @@ from github_utils import github_get
 
 TEMPLATE_PATH = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
-    "grafana", "dashboards", "github-contributions.template.json"
+    "grafana", "templates", "github-contributions.template.json"
 )
 OUTPUT_PATH = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),

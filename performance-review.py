@@ -525,6 +525,93 @@ def generate_daily_timeseries(stats):
     return result
 
 
+def generate_repo_breakdown(stats):
+    """
+    Aggregate contributions per repository
+    Returns list of per-repo data points sorted by total activity (descending)
+    """
+    repos = {}
+
+    def repo_entry(repo_name):
+        if repo_name not in repos:
+            repos[repo_name] = {
+                'repo': repo_name,
+                'org': repo_name.split('/')[0],
+                'name': repo_name.split('/')[-1],
+                'merged_prs': 0,
+                'reviews_submitted': 0,
+                'reviews_non_bot': 0,
+                'reviews_bot': 0,
+                'pr_review_comments': 0,
+                'issues_commented': 0,
+            }
+        return repos[repo_name]
+
+    for pr in stats['merged_prs']:
+        repo_entry(pr['repo'])['merged_prs'] += 1
+
+    for review in stats['prs_reviewed']:
+        entry = repo_entry(review['repo'])
+        entry['reviews_submitted'] += 1
+        if review.get('author_is_bot', False):
+            entry['reviews_bot'] += 1
+        else:
+            entry['reviews_non_bot'] += 1
+
+    for pr_comment in stats['pr_comments_made']:
+        repo_entry(pr_comment['repo'])['pr_review_comments'] += pr_comment['comment_count']
+
+    for issue_comment in stats['issue_comments_made']:
+        repo_entry(issue_comment['repo'])['issues_commented'] += 1
+
+    for entry in repos.values():
+        entry['total_activity'] = (
+            entry['merged_prs']
+            + entry['reviews_submitted']
+            + entry['pr_review_comments']
+            + entry['issues_commented']
+        )
+
+    return sorted(repos.values(), key=lambda r: (-r['total_activity'], r['repo']))
+
+
+def generate_repo_daily_timeseries(stats):
+    """
+    Generate daily per-repository metrics in long format (one row per date/repo)
+    Only days with activity are emitted, keeping the file small as repo counts grow
+    """
+    start = config['start_date']
+    end = config['end_date']
+
+    daily = {}
+
+    def daily_entry(date_str, repo_name):
+        key = (date_str, repo_name)
+        if key not in daily:
+            daily[key] = {
+                'date': date_str,
+                'repo': repo_name,
+                'org': repo_name.split('/')[0],
+                'merged_prs': 0,
+                'reviews_submitted': 0,
+            }
+        return daily[key]
+
+    for pr in stats['merged_prs']:
+        if pr.get('merged_at'):
+            date_str = pr['merged_at'][:10]
+            if start <= date_str <= end:
+                daily_entry(date_str, pr['repo'])['merged_prs'] += 1
+
+    for review in stats['prs_reviewed']:
+        if review.get('submitted_at'):
+            date_str = review['submitted_at'][:10]
+            if start <= date_str <= end:
+                daily_entry(date_str, review['repo'])['reviews_submitted'] += 1
+
+    return [daily[key] for key in sorted(daily.keys())]
+
+
 def save_timeseries_outputs(stats):
     """Save all timeseries data formats"""
     clear_cache_stats_line()
@@ -540,6 +627,33 @@ def save_timeseries_outputs(stats):
             writer.writerows(daily_data)
 
     print(f"   ✓ Daily timeseries saved to: {csv_path}")
+
+    repo_daily_data = generate_repo_daily_timeseries(stats)
+    repo_csv_path = os.path.join(config['output_dir'], 'timeseries_repo_daily.csv')
+
+    repo_daily_fields = ['date', 'repo', 'org', 'merged_prs', 'reviews_submitted']
+    with open(repo_csv_path, 'w', newline='') as f:
+        writer = csv.DictWriter(f, fieldnames=repo_daily_fields)
+        writer.writeheader()
+        writer.writerows(repo_daily_data)
+
+    print(f"   ✓ Daily per-repository timeseries saved to: {repo_csv_path}")
+
+    repo_breakdown = generate_repo_breakdown(stats)
+    repo_path = os.path.join(config['output_dir'], 'by_repository.json')
+
+    with open(repo_path, 'w') as f:
+        json.dump({
+            'period': {
+                'start': config['start_date'],
+                'end': config['end_date']
+            },
+            'username': config['username'],
+            'organizations': config['organizations'],
+            'repositories': repo_breakdown,
+        }, f, indent=2)
+
+    print(f"   ✓ Repository breakdown saved to: {repo_path}")
 
     events = extract_timeseries_events(stats)
     events_path = os.path.join(config['output_dir'], 'events.json')
@@ -631,16 +745,14 @@ def print_summary(stats):
 
     print(f"\n📦 CONTRIBUTIONS BY REPOSITORY")
     print("-" * 80)
-    repo_stats = defaultdict(lambda: {'merged_prs': 0, 'reviewed_prs': 0})
-
-    for pr in stats['merged_prs']:
-        repo_stats[pr['repo']]['merged_prs'] += 1
-
-    for pr in stats['prs_reviewed']:
-        repo_stats[pr['repo']]['reviewed_prs'] += 1
-
-    for repo, counts in sorted(repo_stats.items(), key=lambda x: x[1]['merged_prs'] + x[1]['reviewed_prs'], reverse=True):
-        print(f"{repo:50} Merged: {counts['merged_prs']:3}  Reviewed: {counts['reviewed_prs']:3}")
+    for entry in generate_repo_breakdown(stats):
+        print(
+            f"{entry['repo']:50} "
+            f"Merged: {entry['merged_prs']:3}  "
+            f"Reviewed: {entry['reviews_submitted']:4}  "
+            f"Comments: {entry['pr_review_comments'] + entry['issues_commented']:4}  "
+            f"Total: {entry['total_activity']:4}"
+        )
 
     if stats['merged_prs']:
         print(f"\n✅ MERGED PULL REQUESTS ({len(stats['merged_prs'])})")
